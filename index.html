@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OMAD 마케팅 생성기</title>
+<style>
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --border: #e6e5e0;
+  --border-light: #f0efe9;
+  --text: #141414;
+  --text-2: #6b6b6b;
+  --text-3: #ababab;
+  --accent: #1a1a2e;
+  --accent-2: #e94560;
+  --tag-bg: #fff0f3;
+  --tag-color: #c4304d;
+  --yt-color: #ff0000;
+  --ts-color: #f60;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; }
+body { font-family: "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100%; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--accent); height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; position: sticky; top: 0; z-index: 200;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { width: 32px; height: 32px; background: var(--accent-2); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; }
+.brand-name { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+.brand-sub { color: rgba(255,255,255,0.4); font-size: 11px; margin-left: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-right span { color: rgba(255,255,255,0.35); font-size: 11px; }
+
+/* 모바일 햄버거 */
+.menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
+.menu-btn span { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.7); margin: 4px 0; border-radius: 2px; transition: all 0.2s; }
+@media (max-width: 720px) {
+  .menu-btn { display: block; }
+  .topbar-right span { display: none; }
+}
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 52px); }
+
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar {
+    display: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 80vh;
+    overflow-y: auto;
+    position: fixed;
+    top: 52px; left: 0; right: 0;
+    z-index: 150;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .sidebar.open { display: flex; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 140; }
+  .overlay.on { display: block; }
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--surface); border-right: 1px solid var(--border);
+  padding: 18px 16px 24px; display: flex; flex-direction: column; gap: 11px; overflow-y: auto;
+}
+.sec-title { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 1px solid var(--border-light); }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; color: var(--text-2); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+
+input, select, textarea {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
+  outline: none; transition: border-color 0.15s, background 0.15s;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent-2); background: var(--surface); }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+textarea { height: 62px; resize: none; line-height: 1.5; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* 저장 설정 */
+.save-section {
+  background: #f0f7ff; border: 1px solid #c8dff8; border-radius: var(--radius); padding: 12px;
+}
+.save-section-title { font-size: 11px; font-weight: 600; color: #1a5cb0; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.save-row { display: flex; gap: 6px; align-items: stretch; }
+.save-row input { flex: 1; }
+.save-row-btn {
+  padding: 0 12px; background: #1a5cb0; color: #fff; border: none; border-radius: var(--radius);
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: background 0.15s;
+}
+.save-row-btn:hover { background: #144a90; }
+.save-hint { font-size: 11px; color: #4477bb; margin-top: 6px; line-height: 1.5; }
+.save-status { font-size: 11px; color: #2a8a40; margin-top: 5px; display: none; }
+
+/* 자동분석 */
+.auto-section { background: linear-gradient(135deg,#f0f4ff,#f5f0ff); border: 1px solid #d8d0f0; border-radius: var(--radius); padding: 12px; }
+.auto-section-title { font-size: 11px; font-weight: 600; color: #5544aa; display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+.auto-btn {
+  width: 100%; padding: 10px; background: #5544aa; color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s;
+}
+.auto-btn:hover { background: #443399; }
+.auto-btn:disabled { background: #bbb; cursor: not-allowed; }
+.auto-hint { font-size: 11px; color: #7766cc; margin-top: 6px; line-height: 1.5; }
+.auto-badge { font-size: 10px; font-weight: 600; color: #7755cc; background: #ede8ff; border-radius: 4px; padding: 1px 6px; }
+
+.api-box { background: #fffbf0; border: 1px solid #f0dda0; border-radius: var(--radius); padding: 10px 12px; }
+.api-box-title { font-size: 11px; font-weight: 600; color: #8a6000; margin-bottom: 6px; }
+.api-box input { background: #fff; border-color: #f0dda0; font-family: monospace; font-size: 12px; }
+.api-box-hint { font-size: 11px; color: #8a6000; margin-top: 5px; }
+.api-box-hint a { color: #8a6000; }
+
+.run-btn {
+  width: 100%; padding: 13px; background: var(--accent-2); color: #fff;
+  border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit; letter-spacing: -0.2px; transition: background 0.15s;
+  margin-top: 2px; min-height: 48px;
+}
+.run-btn:hover { background: #c83650; }
+.run-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ── MAIN ── */
+.main { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.tabs {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  display: flex; padding: 0 12px; overflow-x: auto; scrollbar-width: none; gap: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 13px 11px; font-size: 13px; color: var(--text-3);
+  border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  font-family: inherit; font-weight: 500; transition: color 0.15s;
+  display: flex; align-items: center; gap: 4px; min-height: 44px;
+}
+.tab:hover { color: var(--text-2); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent-2); }
+.tab .dot { width: 5px; height: 5px; border-radius: 50%; display: none; }
+.tab.yt .dot { background: var(--yt-color); }
+.tab.ts .dot { background: var(--ts-color); }
+.tab.yt.active .dot, .tab.ts.active .dot { display: inline-block; }
+
+.panels { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; color: var(--text-3); gap: 12px; font-size: 13px; text-align: center; }
+.loading { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; gap: 14px; }
+.loading.on { display: flex; }
+.spinner { width: 28px; height: 28px; border: 2.5px solid var(--border); border-top-color: var(--accent-2); border-radius: 50%; animation: spin .65s linear infinite; }
+.spinner-sm { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.load-txt { font-size: 13px; color: var(--text-2); }
+
+.action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.action-info { font-size: 12px; color: var(--text-3); }
+.copy-all-btn { padding: 6px 13px; font-size: 13px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; min-height: 36px; }
+.copy-all-btn:hover { border-color: var(--accent-2); color: var(--accent-2); }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
+.card-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg); border-bottom: 1px solid var(--border-light); }
+.card-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.copy-btn { padding: 5px 12px; font-size: 13px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; min-height: 34px; }
+.copy-btn:hover { border-color: var(--accent-2); color: var(--accent-2); }
+.card-body { padding: 14px; font-size: 13px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; color: var(--text); }
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px; background: var(--bg); border-top: 1px solid var(--border-light); }
+.tag { padding: 4px 11px; border-radius: 20px; font-size: 12px; background: var(--tag-bg); color: var(--tag-color); font-weight: 500; }
+
+.check-item { display: flex; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--border-light); align-items: flex-start; }
+.check-item:last-child { border: none; }
+.ck-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+.ck-label { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+.ck-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+.rep-sec { padding: 14px; border-bottom: 1px solid var(--border-light); }
+.rep-sec:last-child { border: none; }
+.rep-title { font-size: 11px; font-weight: 600; color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 7px; }
+.rep-body { font-size: 13px; line-height: 1.75; white-space: pre-wrap; }
+
+.platform-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+.badge-yt { background: #fff0f0; color: var(--yt-color); }
+.badge-ts { background: #fff5ee; color: var(--ts-color); }
+.badge-note { background: #f0f4ff; color: #3355cc; font-size: 12px; padding: 10px 14px; border-radius: var(--radius); line-height: 1.6; margin-bottom: 12px; }
+
+/* 모바일 하단 생성 버튼 */
+.mobile-fab {
+  display: none;
+  position: fixed;
+  bottom: calc(16px + var(--safe-bottom));
+  right: 16px;
+  z-index: 130;
+  background: var(--accent-2);
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(233,69,96,0.4);
+  transition: all 0.15s;
+}
+@media (max-width: 720px) {
+  .mobile-fab { display: flex; align-items: center; gap: 7px; }
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">OM</div>
+    <span class="brand-name">OMAD</span>
+    <span class="brand-sub">마케팅 생성기</span>
+  </div>
+  <div class="topbar-right">
+    <span>한영주류 영업팀 전용</span>
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sec-title">거래처 정보</div>
+
+    <div class="field">
+      <label>상호명 *</label>
+      <input id="sName" placeholder="예) 문정갈빗집 구리수택점">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>업종 *</label>
+        <input id="sCat" placeholder="고깃집, 이자카야...">
+      </div>
+      <div class="field">
+        <label>상태</label>
+        <select id="sSt">
+          <option>영업중</option>
+          <option>오픈예정</option>
+          <option>신규거래처</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>주소 *</label>
+      <input id="sAddr" placeholder="경기도 구리시 체육관로 156 1층" oninput="onAddrInput()">
+    </div>
+
+    <!-- 자동분석 -->
+    <div class="auto-section">
+      <div class="auto-section-title">✦ AI 상권 자동 분석</div>
+      <button class="auto-btn" id="autoBtn" onclick="autoAnalyze()">
+        <span id="autoBtnContent">상권·고객층 자동 입력</span>
+      </button>
+      <div class="auto-hint">업종 + 주소 입력 후 클릭하면 AI가 자동으로 분석합니다.</div>
+    </div>
+
+    <div class="field" id="fieldEx">
+      <label>상권 특징 <span class="auto-badge" id="badgeEx" style="display:none">AI</span></label>
+      <textarea id="sEx" placeholder="자동분석 또는 직접 입력"></textarea>
+    </div>
+    <div class="field" id="fieldTg">
+      <label>주요 고객층 <span class="auto-badge" id="badgeTg" style="display:none">AI</span></label>
+      <textarea id="sTg" placeholder="자동분석 또는 직접 입력"></textarea>
+    </div>
+
+    <!-- API 키 저장 -->
+    <div class="save-section">
+      <div class="save-section-title">💾 API 키 저장 (이 기기에만 보관)</div>
+      <div class="save-row">
+        <input type="password" id="apiKey" placeholder="Gemini API 키 (AIzaSy...)">
+        <button class="save-row-btn" onclick="saveApiKey()">저장</button>
+      </div>
+      <div class="save-hint">저장하면 다음번에 자동으로 채워집니다. 이 기기 브라우저에만 저장되며 외부로 전송되지 않아요.</div>
+      <div class="save-status" id="saveStatus">✓ 저장되었습니다</div>
+      <div style="margin-top:6px;">
+        <a href="https://aistudio.google.com" target="_blank" style="font-size:11px;color:#4477bb;">aistudio.google.com에서 무료 발급 →</a>
+      </div>
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="run()">✦ 콘텐츠 생성하기</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('checklist')">플레이스</button>
+      <button class="tab" onclick="showTab('blog')">블로그</button>
+      <button class="tab" onclick="showTab('insta')">인스타</button>
+      <button class="tab" onclick="showTab('facebook')">페이스북</button>
+      <button class="tab yt" onclick="showTab('youtube')"><span class="dot"></span>유튜브</button>
+      <button class="tab ts" onclick="showTab('tistory')"><span class="dot"></span>티스토리</button>
+      <button class="tab" onclick="showTab('report')">상권분석</button>
+    </div>
+
+    <div class="panels">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="load-txt" id="loadTxt">AI가 콘텐츠를 생성하고 있습니다…</div>
+      </div>
+      <div class="panel active" id="p-checklist">
+        <div class="empty" id="emptyMsg">
+          <div style="font-size:38px;opacity:.3">✦</div>
+          거래처 정보를 입력하고<br>생성하기를 눌러주세요<br>
+          <span style="font-size:12px;margin-top:4px;">(모바일: 우상단 ☰ 메뉴)</span>
+        </div>
+        <div id="b-checklist"></div>
+      </div>
+      <div class="panel" id="p-blog"><div id="b-blog"></div></div>
+      <div class="panel" id="p-insta"><div id="b-insta"></div></div>
+      <div class="panel" id="p-facebook"><div id="b-facebook"></div></div>
+      <div class="panel" id="p-youtube"><div id="b-youtube"></div></div>
+      <div class="panel" id="p-tistory"><div id="b-tistory"></div></div>
+      <div class="panel" id="p-report"><div id="b-report"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 모바일 하단 플로팅 버튼 -->
+<button class="mobile-fab" id="mobileFab" onclick="mobileRun()">
+  ✦ 생성하기
+</button>
+
+<script>
+var TABS = ['checklist','blog','insta','facebook','youtube','tistory','report'];
+var EMBEDDED_KEY = 'AIzaSyD3jAB6HQUL4L4c2gm5qG2adTq1dlQq4Pk';
+
+window.onload = function() {
+  // localStorage에서 API 키 불러오기
+  var saved = localStorage.getItem('omad_gemini_key');
+  if (saved) {
+    document.getElementById('apiKey').value = saved;
+  } else {
+    document.getElementById('apiKey').value = EMBEDDED_KEY;
+  }
+};
+
+function getApiKey() {
+  return document.getElementById('apiKey').value.trim() || EMBEDDED_KEY;
+}
+
+function saveApiKey() {
+  var key = document.getElementById('apiKey').value.trim();
+  if (!key) { alert('API 키를 입력해주세요'); return; }
+  localStorage.setItem('omad_gemini_key', key);
+  var st = document.getElementById('saveStatus');
+  st.style.display = 'block';
+  setTimeout(function(){ st.style.display = 'none'; }, 2500);
+}
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('on');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+function showTab(id) {
+  TABS.forEach(function(t) {
+    document.getElementById('p-'+t).classList.toggle('active', t===id);
+  });
+  document.querySelectorAll('.tab').forEach(function(b,i) {
+    b.classList.toggle('active', TABS[i]===id);
+  });
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function copyText(txt, btn) {
+  navigator.clipboard.writeText(txt).then(function() {
+    var orig = btn.textContent;
+    btn.textContent = '복사됨 ✓';
+    setTimeout(function(){ btn.textContent = orig; }, 1500);
+  });
+}
+function onAddrInput() {
+  document.getElementById('badgeEx').style.display = 'none';
+  document.getElementById('badgeTg').style.display = 'none';
+}
+
+async function autoAnalyze() {
+  var addr = document.getElementById('sAddr').value.trim();
+  var cat  = document.getElementById('sCat').value.trim();
+  var st   = document.getElementById('sSt').value;
+  if (!addr) { alert('주소를 먼저 입력해주세요'); return; }
+
+  var btn = document.getElementById('autoBtn');
+  var bc  = document.getElementById('autoBtnContent');
+  btn.disabled = true;
+  bc.innerHTML = '<div class="spinner-sm"></div> 분석 중...';
+
+  var prompt = '업종: '+(cat||'음식점')+'\n주소: '+addr+'\n상태: '+st+
+    '\n\n위 정보로 상권 특징과 주요 고객층을 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장","target":"주요 고객층 2~3문장"}';
+
+  try {
+    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+getApiKey(), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.7,responseMimeType:'application/json'} })
+    });
+    var d = await res.json();
+    if (!res.ok) throw new Error((d.error&&d.error.message)||'오류 '+res.status);
+    var parsed = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
+    document.getElementById('sEx').value = parsed.extra||'';
+    document.getElementById('sTg').value = parsed.target||'';
+    document.getElementById('badgeEx').style.display = 'inline-block';
+    document.getElementById('badgeTg').style.display = 'inline-block';
+  } catch(e) { alert('분석 오류: '+e.message); }
+  finally {
+    btn.disabled = false;
+    bc.textContent = '다시 분석하기';
+  }
+}
+
+function mobileRun() { closeSidebar(); run(); }
+
+async function run() {
+  var name = document.getElementById('sName').value.trim();
+  var addr = document.getElementById('sAddr').value.trim();
+  if (!name||!addr) { alert('상호명과 주소는 필수입니다'); return; }
+
+  var data = {
+    name:name, address:addr,
+    category: document.getElementById('sCat').value.trim()||'음식점',
+    status: document.getElementById('sSt').value,
+    extra: document.getElementById('sEx').value.trim()||'없음',
+    target: document.getElementById('sTg').value.trim()||'일반 고객'
+  };
+
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('mobileFab').disabled = true;
+  document.getElementById('loading').classList.add('on');
+  document.getElementById('emptyMsg').style.display = 'none';
+  TABS.forEach(function(t){ document.getElementById('b-'+t).innerHTML=''; });
+
+  var prompt = '다음 외식업체 마케팅 콘텐츠를 생성하세요. 반드시 JSON으로만 응답하세요.\n\n'+
+    '상호명:'+data.name+'\n업종:'+data.category+'\n주소:'+data.address+
+    '\n상태:'+data.status+'\n특징:'+data.extra+'\n고객층:'+data.target+'\n\n'+
+    '{"checklist":"네이버플레이스 최적화 체크리스트 10개. 줄바꿈 구분. ✅또는⚠️시작. 형식:이모지 항목명 — 설명",'+
+    '"blog":"네이버 블로그 초안. 제목포함. 1500자. 방문후기형식.",'+
+    '"insta_body":"인스타 본문. 이모지. 200자이내. 해시태그제외.",'+
+    '"insta_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10","태그11","태그12","태그13","태그14","태그15"],'+
+    '"facebook":"페이스북. 이모지. 300자이내. 공유유도.",'+
+    '"youtube_title":"유튜브 제목후보 3개. 줄바꿈구분.",'+
+    '"youtube_desc":"유튜브 설명란. 500자. 타임스탬프포함. SEO최적화.",'+
+    '"youtube_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10"],'+
+    '"tistory_title":"티스토리 제목. SEO최적화.",'+
+    '"tistory_body":"티스토리 포스팅. 2000자. 소제목포함. 방문기형식. 텍스트만.",'+
+    '"tistory_tags":["태그1","태그2","태그3","태그4","태그5"],'+
+    '"report":{"주요 고객층 분석":"내용","상권 및 경쟁 환경":"내용","추천 주류 품목":"내용","영업 핵심 포인트":"내용","방문 적기":"내용"}}';
+
+  try {
+    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+getApiKey(), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})
+    });
+    var d2 = await res.json();
+    if (!res.ok) throw new Error((d2.error&&d2.error.message)||'오류 '+res.status);
+    var parsed = JSON.parse(d2.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
+    document.getElementById('loading').classList.remove('on');
+    document.getElementById('runBtn').disabled = false;
+    document.getElementById('mobileFab').disabled = false;
+    renderAll(parsed, name);
+    showTab('checklist');
+  } catch(e) {
+    document.getElementById('loading').classList.remove('on');
+    document.getElementById('runBtn').disabled = false;
+    document.getElementById('mobileFab').disabled = false;
+    alert('오류: '+e.message);
+  }
+}
+
+function makeCard(label, content, copyContent) {
+  var copy = copyContent||content;
+  return '<div class="card"><div class="card-head"><span class="card-label">'+esc(label)+'</span><button class="copy-btn" onclick="copyText('+JSON.stringify(copy)+',this)">복사</button></div><div class="card-body">'+esc(content)+'</div></div>';
+}
+
+function renderAll(r, name) {
+  /* 체크리스트 */
+  var lines = (r.checklist||'').split('\n').filter(function(l){return l.trim();});
+  var items = lines.map(function(line){
+    var isOk=line.indexOf('✅')===0,isW=line.indexOf('⚠️')===0;
+    var icon=isOk?'✅':isW?'⚠️':'📌';
+    var content=line.replace(/^[✅⚠️📌]\s*/,'');
+    var parts=content.split(' — ');
+    return '<div class="check-item"><span class="ck-icon">'+icon+'</span><div><div class="ck-label">'+esc(parts[0]||content)+'</div>'+(parts[1]?'<div class="ck-desc">'+esc(parts[1])+'</div>':'')+'</div></div>';
+  }).join('');
+  document.getElementById('b-checklist').innerHTML=
+    '<div class="action-bar"><span class="action-info"><b>'+esc(name)+'</b></span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.checklist||'')+',this)">전체 복사</button></div>'+
+    '<div class="card">'+items+'</div>';
+
+  /* 블로그 */
+  document.getElementById('b-blog').innerHTML=
+    '<div class="action-bar"><span class="action-info">네이버 블로그에 붙여넣기</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.blog||'')+',this)">전체 복사</button></div>'+
+    makeCard('블로그 초안',r.blog||'');
+
+  /* 인스타 */
+  var itags=(r.insta_tags||[]).map(function(t){return '<span class="tag">'+esc(t.charAt(0)==='#'?t:'#'+t)+'</span>';}).join('');
+  var instaAll=(r.insta_body||'')+'\n\n'+(r.insta_tags||[]).map(function(t){return t.charAt(0)==='#'?t:'#'+t;}).join(' ');
+  document.getElementById('b-insta').innerHTML=
+    '<div class="action-bar"><span class="action-info">이미지와 함께 업로드</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(instaAll)+',this)">본문+태그 복사</button></div>'+
+    '<div class="card"><div class="card-head"><span class="card-label">본문</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.insta_body||'')+',this)">복사</button></div><div class="card-body">'+esc(r.insta_body||'')+'</div><div class="tags-wrap">'+itags+'</div></div>';
+
+  /* 페이스북 */
+  document.getElementById('b-facebook').innerHTML=
+    '<div class="action-bar"><span class="action-info">이미지와 함께 게시</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.facebook||'')+',this)">전체 복사</button></div>'+
+    makeCard('페이스북',r.facebook||'');
+
+  /* 유튜브 */
+  var ytTags=(r.youtube_tags||[]).map(function(t){return '<span class="tag" style="background:#fff0f0;color:var(--yt-color);">'+esc(t.charAt(0)==='#'?t:'#'+t)+'</span>';}).join('');
+  var ytAll='【제목 후보】\n'+(r.youtube_title||'')+'\n\n【설명란】\n'+(r.youtube_desc||'')+'\n\n【태그】\n'+(r.youtube_tags||[]).map(function(t){return t.charAt(0)==='#'?t:'#'+t;}).join(' ');
+  document.getElementById('b-youtube').innerHTML=
+    '<div class="badge-note"><span class="platform-badge badge-yt">▶ YouTube</span> 유튜브 스튜디오에 업로드 후 아래 내용을 붙여넣으세요.</div>'+
+    '<div class="action-bar"><span class="action-info">유튜브 스튜디오용</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(ytAll)+',this)">전체 복사</button></div>'+
+    makeCard('제목 후보 3개',r.youtube_title||'')+
+    '<div class="card"><div class="card-head"><span class="card-label">설명란</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.youtube_desc||'')+',this)">복사</button></div><div class="card-body">'+esc(r.youtube_desc||'')+'</div><div class="tags-wrap">'+ytTags+'</div></div>';
+
+  /* 티스토리 */
+  var tsTags=(r.tistory_tags||[]).map(function(t){return '<span class="tag" style="background:#fff5ee;color:var(--ts-color);">'+esc(t)+'</span>';}).join('');
+  var tsAll=(r.tistory_title||'')+'\n\n'+(r.tistory_body||'')+'\n\n태그: '+(r.tistory_tags||[]).join(', ');
+  document.getElementById('b-tistory').innerHTML=
+    '<div class="badge-note"><span class="platform-badge badge-ts">T 티스토리</span> 티스토리 글쓰기에 붙여넣으세요.</div>'+
+    '<div class="action-bar"><span class="action-info">티스토리용</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(tsAll)+',this)">전체 복사</button></div>'+
+    makeCard('포스팅 제목',r.tistory_title||'')+
+    '<div class="card"><div class="card-head"><span class="card-label">본문</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.tistory_body||'')+',this)">복사</button></div><div class="card-body">'+esc(r.tistory_body||'')+'</div><div class="tags-wrap">'+tsTags+'</div></div>';
+
+  /* 상권분석 */
+  var h='<div class="action-bar"><span class="action-info">영업 방문 전 참고</span></div><div class="card">';
+  if(r.report&&typeof r.report==='object'){Object.keys(r.report).forEach(function(k){h+='<div class="rep-sec"><div class="rep-title">'+esc(k)+'</div><div class="rep-body">'+esc(r.report[k])+'</div></div>';});}
+  else{h+='<div class="card-body">'+esc(r.report||'')+'</div>';}
+  document.getElementById('b-report').innerHTML=h+'</div>';
+}
+</script>
+</body>
+</html>
