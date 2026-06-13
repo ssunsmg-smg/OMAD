@@ -172,11 +172,11 @@ var TABS = ['checklist','blog','insta','facebook','youtube','tistory','report'];
 // Vercel 서버 URL — 배포 후 자동으로 같은 도메인 사용
 var API_URL = '/api/gemini';
 
-async function callGemini(prompt, temperature) {
+async function callGemini(prompt, temperature, isAnalysis, address) {
   var res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt: prompt, temperature: temperature || 0.8 })
+    body: JSON.stringify({ prompt: prompt, temperature: temperature || 0.8, isAnalysis: !!isAnalysis, address: address || '' })
   });
   var d = await res.json();
   if (!res.ok) throw new Error(d.error || '오류 ' + res.status);
@@ -204,7 +204,7 @@ async function autoAnalyze() {
   var btn=document.getElementById('autoBtn'); var bc=document.getElementById('autoBtnContent');
   btn.disabled=true; bc.innerHTML='<div class="spinner-sm"></div> 분석 중...';
   try {
-    var parsed = await callGemini('업종:'+(cat||'음식점')+'\n주소:'+addr+'\n상태:'+st+'\n\n위 정보로 상권 특징과 주요 고객층을 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장","target":"주요 고객층 2~3문장"}', 0.7);
+    var parsed = await callGemini('업종:'+(cat||'음식점')+'\n주소:'+addr+'\n상태:'+st+'\n\n위 실제 지도 데이터를 기반으로 상권 특징과 주요 고객층을 정확하게 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장 (실제 주변 시설 언급)","target":"주요 고객층 2~3문장"}', 0.7, true, addr);
     document.getElementById('sEx').value=parsed.extra||'';
     document.getElementById('sTg').value=parsed.target||'';
     document.getElementById('badgeEx').style.display='inline-block';
