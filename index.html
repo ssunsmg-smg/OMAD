@@ -27,12 +27,10 @@
 html { height: 100%; }
 body { font-family: "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100%; }
 
-/* ── TOPBAR ── */
 .topbar {
   background: var(--accent); height: 52px;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; position: sticky; top: 0; z-index: 200;
-  padding-top: env(safe-area-inset-top, 0px);
 }
 .brand { display: flex; align-items: center; gap: 10px; }
 .logo { width: 32px; height: 32px; background: var(--accent-2); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; }
@@ -40,37 +38,27 @@ body { font-family: "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-seri
 .brand-sub { color: rgba(255,255,255,0.4); font-size: 11px; margin-left: 2px; }
 .topbar-right { display: flex; align-items: center; gap: 10px; }
 .topbar-right span { color: rgba(255,255,255,0.35); font-size: 11px; }
-
-/* 모바일 햄버거 */
 .menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
-.menu-btn span { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.7); margin: 4px 0; border-radius: 2px; transition: all 0.2s; }
+.menu-btn span { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.7); margin: 4px 0; border-radius: 2px; }
 @media (max-width: 720px) {
   .menu-btn { display: block; }
   .topbar-right span { display: none; }
 }
 
-/* ── LAYOUT ── */
 .layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 52px); }
-
 @media (max-width: 720px) {
-  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .layout { grid-template-columns: 1fr; }
   .sidebar {
-    display: none;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    max-height: 80vh;
-    overflow-y: auto;
-    position: fixed;
-    top: 52px; left: 0; right: 0;
-    z-index: 150;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    display: none; border-right: none; border-bottom: 1px solid var(--border);
+    max-height: 80vh; overflow-y: auto;
+    position: fixed; top: 52px; left: 0; right: 0;
+    z-index: 150; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   }
   .sidebar.open { display: flex; }
   .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 140; }
   .overlay.on { display: block; }
 }
 
-/* ── SIDEBAR ── */
 .sidebar {
   background: var(--surface); border-right: 1px solid var(--border);
   padding: 18px 16px 24px; display: flex; flex-direction: column; gap: 11px; overflow-y: auto;
@@ -78,36 +66,16 @@ body { font-family: "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-seri
 .sec-title { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 1px solid var(--border-light); }
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field label { font-size: 12px; color: var(--text-2); font-weight: 500; display: flex; align-items: center; gap: 4px; }
-
 input, select, textarea {
-  width: 100%; padding: 9px 11px;
-  border: 1px solid var(--border); border-radius: var(--radius);
+  width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius);
   font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
-  outline: none; transition: border-color 0.15s, background 0.15s;
-  -webkit-appearance: none; appearance: none;
+  outline: none; transition: border-color 0.15s, background 0.15s; -webkit-appearance: none;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent-2); background: var(--surface); }
 select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 textarea { height: 62px; resize: none; line-height: 1.5; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-/* 저장 설정 */
-.save-section {
-  background: #f0f7ff; border: 1px solid #c8dff8; border-radius: var(--radius); padding: 12px;
-}
-.save-section-title { font-size: 11px; font-weight: 600; color: #1a5cb0; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
-.save-row { display: flex; gap: 6px; align-items: stretch; }
-.save-row input { flex: 1; }
-.save-row-btn {
-  padding: 0 12px; background: #1a5cb0; color: #fff; border: none; border-radius: var(--radius);
-  font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;
-  transition: background 0.15s;
-}
-.save-row-btn:hover { background: #144a90; }
-.save-hint { font-size: 11px; color: #4477bb; margin-top: 6px; line-height: 1.5; }
-.save-status { font-size: 11px; color: #2a8a40; margin-top: 5px; display: none; }
-
-/* 자동분석 */
 .auto-section { background: linear-gradient(135deg,#f0f4ff,#f5f0ff); border: 1px solid #d8d0f0; border-radius: var(--radius); padding: 12px; }
 .auto-section-title { font-size: 11px; font-weight: 600; color: #5544aa; display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
 .auto-btn {
@@ -120,11 +88,17 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .auto-hint { font-size: 11px; color: #7766cc; margin-top: 6px; line-height: 1.5; }
 .auto-badge { font-size: 10px; font-weight: 600; color: #7755cc; background: #ede8ff; border-radius: 4px; padding: 1px 6px; }
 
-.api-box { background: #fffbf0; border: 1px solid #f0dda0; border-radius: var(--radius); padding: 10px 12px; }
-.api-box-title { font-size: 11px; font-weight: 600; color: #8a6000; margin-bottom: 6px; }
-.api-box input { background: #fff; border-color: #f0dda0; font-family: monospace; font-size: 12px; }
-.api-box-hint { font-size: 11px; color: #8a6000; margin-top: 5px; }
-.api-box-hint a { color: #8a6000; }
+/* Claude AI 배지 */
+.ai-badge-box {
+  background: linear-gradient(135deg, #f0f7ff, #e8f4ff);
+  border: 1px solid #b8d8f8;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ai-badge-icon { font-size: 18px; }
+.ai-badge-text { font-size: 12px; color: #1a5cb0; line-height: 1.4; }
+.ai-badge-text strong { display: block; font-size: 13px; margin-bottom: 1px; }
 
 .run-btn {
   width: 100%; padding: 13px; background: var(--accent-2); color: #fff;
@@ -135,9 +109,7 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .run-btn:hover { background: #c83650; }
 .run-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-/* ── MAIN ── */
 .main { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-
 .tabs {
   background: var(--surface); border-bottom: 1px solid var(--border);
   display: flex; padding: 0 12px; overflow-x: auto; scrollbar-width: none; gap: 0;
@@ -146,9 +118,8 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
   padding: 13px 11px; font-size: 13px; color: var(--text-3);
-  border: none; background: none; cursor: pointer;
-  border-bottom: 2px solid transparent; white-space: nowrap;
-  font-family: inherit; font-weight: 500; transition: color 0.15s;
+  border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; font-family: inherit; font-weight: 500; transition: color 0.15s;
   display: flex; align-items: center; gap: 4px; min-height: 44px;
 }
 .tab:hover { color: var(--text-2); }
@@ -200,28 +171,14 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .badge-ts { background: #fff5ee; color: var(--ts-color); }
 .badge-note { background: #f0f4ff; color: #3355cc; font-size: 12px; padding: 10px 14px; border-radius: var(--radius); line-height: 1.6; margin-bottom: 12px; }
 
-/* 모바일 하단 생성 버튼 */
 .mobile-fab {
-  display: none;
-  position: fixed;
-  bottom: calc(16px + var(--safe-bottom));
-  right: 16px;
-  z-index: 130;
-  background: var(--accent-2);
-  color: #fff;
-  border: none;
-  border-radius: 28px;
-  padding: 13px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: 0 4px 20px rgba(233,69,96,0.4);
-  transition: all 0.15s;
+  display: none; position: fixed;
+  bottom: calc(16px + var(--safe-bottom)); right: 16px; z-index: 130;
+  background: var(--accent-2); color: #fff; border: none; border-radius: 28px;
+  padding: 13px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 20px rgba(233,69,96,0.4); transition: all 0.15s;
 }
-@media (max-width: 720px) {
-  .mobile-fab { display: flex; align-items: center; gap: 7px; }
-}
+@media (max-width: 720px) { .mobile-fab { display: flex; align-items: center; gap: 7px; } }
 </style>
 </head>
 <body>
@@ -236,14 +193,13 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
   </div>
   <div class="topbar-right">
     <span>한영주류 영업팀 전용</span>
-    <button class="menu-btn" onclick="toggleSidebar()" aria-label="메뉴 열기">
+    <button class="menu-btn" onclick="toggleSidebar()" aria-label="메뉴">
       <span></span><span></span><span></span>
     </button>
   </div>
 </div>
 
 <div class="layout">
-  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div class="sec-title">거래처 정보</div>
 
@@ -270,7 +226,6 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
       <input id="sAddr" placeholder="경기도 구리시 체육관로 156 1층" oninput="onAddrInput()">
     </div>
 
-    <!-- 자동분석 -->
     <div class="auto-section">
       <div class="auto-section-title">✦ AI 상권 자동 분석</div>
       <button class="auto-btn" id="autoBtn" onclick="autoAnalyze()">
@@ -288,24 +243,18 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
       <textarea id="sTg" placeholder="자동분석 또는 직접 입력"></textarea>
     </div>
 
-    <!-- API 키 저장 -->
-    <div class="save-section">
-      <div class="save-section-title">🔑 Gemini API 키 (필수)</div>
-      <div class="save-row">
-        <input type="password" id="apiKey" placeholder="API 키를 입력하고 저장 버튼 클릭">
-        <button class="save-row-btn" onclick="saveApiKey()">저장</button>
-      </div>
-      <div class="save-hint">⚠️ 반드시 본인 키를 입력 후 저장하세요. 이 기기에만 보관되며 외부로 전송되지 않아요.</div>
-      <div class="save-status" id="saveStatus">✓ 저장되었습니다</div>
-      <div style="margin-top:6px;">
-        <a href="https://aistudio.google.com" target="_blank" style="font-size:11px;color:#4477bb;">aistudio.google.com에서 무료 발급 →</a>
+    <!-- Claude AI 배지 (키 불필요) -->
+    <div class="ai-badge-box">
+      <div class="ai-badge-icon">✦</div>
+      <div class="ai-badge-text">
+        <strong>Claude AI 탑재</strong>
+        API 키 없이 바로 사용 가능합니다
       </div>
     </div>
 
     <button class="run-btn" id="runBtn" onclick="run()">✦ 콘텐츠 생성하기</button>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="tabs">
       <button class="tab active" onclick="showTab('checklist')">플레이스</button>
@@ -340,81 +289,50 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
   </div>
 </div>
 
-<!-- 모바일 하단 플로팅 버튼 -->
-<button class="mobile-fab" id="mobileFab" onclick="mobileRun()">
-  ✦ 생성하기
-</button>
+<button class="mobile-fab" id="mobileFab" onclick="mobileRun()">✦ 생성하기</button>
 
 <script>
 var TABS = ['checklist','blog','insta','facebook','youtube','tistory','report'];
 
-
-window.onload = function() {
-  // localStorage에서 API 키 불러오기
-  var saved = localStorage.getItem('omad_gemini_key');
-  if (saved) {
-    document.getElementById('apiKey').value = saved;
-  } else {
-    
-  }
-};
-
-
-function buildFetch(apiKey, prompt, temperature, mimeType) {
-  var isNew = apiKey.startsWith('AQ.');
-  var url = isNew
-    ? 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
-    : 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
-  var headers = {'Content-Type':'application/json'};
-  if (isNew) headers['x-goog-api-key'] = apiKey;
-  return fetch(url, {
-    method:'POST',
-    headers: headers,
-    body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:temperature,responseMimeType:mimeType||'application/json'}})
+async function callClaude(prompt) {
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      system: '당신은 OMAD(한영주류 영업팀) 마케팅 콘텐츠 생성기입니다. 반드시 JSON만 반환하고 마크다운 코드블록 없이 순수 JSON만 출력하세요.',
+      messages: [{ role: 'user', content: prompt }]
+    })
   });
-}
-
-function getApiKey() {
-  var key = document.getElementById('apiKey').value.trim();
-  if (!key) { alert('API 키를 입력하고 저장 버튼을 눌러주세요.\n\naistudio.google.com에서 무료로 발급받을 수 있어요.'); return null; }
-  return key;
-}
-
-function saveApiKey() {
-  var key = document.getElementById('apiKey').value.trim();
-  if (!key) { alert('API 키를 입력해주세요'); return; }
-  localStorage.setItem('omad_gemini_key', key);
-  var st = document.getElementById('saveStatus');
-  st.style.display = 'block';
-  setTimeout(function(){ st.style.display = 'none'; }, 2500);
+  var d = await res.json();
+  if (!res.ok) throw new Error((d.error && d.error.message) || '오류 ' + res.status);
+  var text = d.content.map(function(c){ return c.text||''; }).join('');
+  return JSON.parse(text.replace(/```json|```/g,'').trim());
 }
 
 function toggleSidebar() {
-  var sb = document.getElementById('sidebar');
-  var ov = document.getElementById('overlay');
-  sb.classList.toggle('open');
-  ov.classList.toggle('on');
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('on');
 }
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('on');
 }
-
 function showTab(id) {
-  TABS.forEach(function(t) {
+  TABS.forEach(function(t){
     document.getElementById('p-'+t).classList.toggle('active', t===id);
   });
-  document.querySelectorAll('.tab').forEach(function(b,i) {
+  document.querySelectorAll('.tab').forEach(function(b,i){
     b.classList.toggle('active', TABS[i]===id);
   });
 }
-
 function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function copyText(txt, btn) {
-  navigator.clipboard.writeText(txt).then(function() {
+  navigator.clipboard.writeText(txt).then(function(){
     var orig = btn.textContent;
     btn.textContent = '복사됨 ✓';
     setTimeout(function(){ btn.textContent = orig; }, 1500);
@@ -431,22 +349,16 @@ async function autoAnalyze() {
   var st   = document.getElementById('sSt').value;
   if (!addr) { alert('주소를 먼저 입력해주세요'); return; }
 
-  var apiKey = getApiKey();
-  if (!apiKey) return;
-
   var btn = document.getElementById('autoBtn');
   var bc  = document.getElementById('autoBtnContent');
   btn.disabled = true;
   bc.innerHTML = '<div class="spinner-sm"></div> 분석 중...';
 
-  var prompt = '업종: '+(cat||'음식점')+'\n주소: '+addr+'\n상태: '+st+
-    '\n\n위 정보로 상권 특징과 주요 고객층을 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장","target":"주요 고객층 2~3문장"}';
-
   try {
-    var res = await buildFetch(apiKey, prompt, 0.7);
-    var d = await res.json();
-    if (!res.ok) throw new Error((d.error&&d.error.message)||'오류 '+res.status);
-    var parsed = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
+    var parsed = await callClaude(
+      '업종: '+(cat||'음식점')+'\n주소: '+addr+'\n상태: '+st+
+      '\n\n위 정보로 상권 특징과 주요 고객층을 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장","target":"주요 고객층 2~3문장"}'
+    );
     document.getElementById('sEx').value = parsed.extra||'';
     document.getElementById('sTg').value = parsed.target||'';
     document.getElementById('badgeEx').style.display = 'inline-block';
@@ -464,8 +376,6 @@ async function run() {
   var name = document.getElementById('sName').value.trim();
   var addr = document.getElementById('sAddr').value.trim();
   if (!name||!addr) { alert('상호명과 주소는 필수입니다'); return; }
-  var apiKey = getApiKey();
-  if (!apiKey) return;
 
   var data = {
     name:name, address:addr,
@@ -481,7 +391,7 @@ async function run() {
   document.getElementById('emptyMsg').style.display = 'none';
   TABS.forEach(function(t){ document.getElementById('b-'+t).innerHTML=''; });
 
-  var prompt = '다음 외식업체 마케팅 콘텐츠를 생성하세요. 반드시 JSON으로만 응답하세요.\n\n'+
+  var prompt = '다음 외식업체 마케팅 콘텐츠를 생성하세요.\n\n'+
     '상호명:'+data.name+'\n업종:'+data.category+'\n주소:'+data.address+
     '\n상태:'+data.status+'\n특징:'+data.extra+'\n고객층:'+data.target+'\n\n'+
     '{"checklist":"네이버플레이스 최적화 체크리스트 10개. 줄바꿈 구분. ✅또는⚠️시작. 형식:이모지 항목명 — 설명",'+
@@ -498,15 +408,13 @@ async function run() {
     '"report":{"주요 고객층 분석":"내용","상권 및 경쟁 환경":"내용","추천 주류 품목":"내용","영업 핵심 포인트":"내용","방문 적기":"내용"}}';
 
   try {
-    var res = await buildFetch(apiKey, prompt, 0.8);
-    var d2 = await res.json();
-    if (!res.ok) throw new Error((d2.error&&d2.error.message)||'오류 '+res.status);
-    var parsed = JSON.parse(d2.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
+    var parsed = await callClaude(prompt);
     document.getElementById('loading').classList.remove('on');
     document.getElementById('runBtn').disabled = false;
     document.getElementById('mobileFab').disabled = false;
     renderAll(parsed, name);
     showTab('checklist');
+    closeSidebar();
   } catch(e) {
     document.getElementById('loading').classList.remove('on');
     document.getElementById('runBtn').disabled = false;
@@ -521,10 +429,9 @@ function makeCard(label, content, copyContent) {
 }
 
 function renderAll(r, name) {
-  /* 체크리스트 */
   var lines = (r.checklist||'').split('\n').filter(function(l){return l.trim();});
   var items = lines.map(function(line){
-    var isOk=line.indexOf('✅')===0,isW=line.indexOf('⚠️')===0;
+    var isOk=line.indexOf('✅')===0, isW=line.indexOf('⚠️')===0;
     var icon=isOk?'✅':isW?'⚠️':'📌';
     var content=line.replace(/^[✅⚠️📌]\s*/,'');
     var parts=content.split(' — ');
@@ -534,24 +441,20 @@ function renderAll(r, name) {
     '<div class="action-bar"><span class="action-info"><b>'+esc(name)+'</b></span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.checklist||'')+',this)">전체 복사</button></div>'+
     '<div class="card">'+items+'</div>';
 
-  /* 블로그 */
   document.getElementById('b-blog').innerHTML=
     '<div class="action-bar"><span class="action-info">네이버 블로그에 붙여넣기</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.blog||'')+',this)">전체 복사</button></div>'+
     makeCard('블로그 초안',r.blog||'');
 
-  /* 인스타 */
   var itags=(r.insta_tags||[]).map(function(t){return '<span class="tag">'+esc(t.charAt(0)==='#'?t:'#'+t)+'</span>';}).join('');
   var instaAll=(r.insta_body||'')+'\n\n'+(r.insta_tags||[]).map(function(t){return t.charAt(0)==='#'?t:'#'+t;}).join(' ');
   document.getElementById('b-insta').innerHTML=
     '<div class="action-bar"><span class="action-info">이미지와 함께 업로드</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(instaAll)+',this)">본문+태그 복사</button></div>'+
     '<div class="card"><div class="card-head"><span class="card-label">본문</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.insta_body||'')+',this)">복사</button></div><div class="card-body">'+esc(r.insta_body||'')+'</div><div class="tags-wrap">'+itags+'</div></div>';
 
-  /* 페이스북 */
   document.getElementById('b-facebook').innerHTML=
     '<div class="action-bar"><span class="action-info">이미지와 함께 게시</span><button class="copy-all-btn" onclick="copyText('+JSON.stringify(r.facebook||'')+',this)">전체 복사</button></div>'+
     makeCard('페이스북',r.facebook||'');
 
-  /* 유튜브 */
   var ytTags=(r.youtube_tags||[]).map(function(t){return '<span class="tag" style="background:#fff0f0;color:var(--yt-color);">'+esc(t.charAt(0)==='#'?t:'#'+t)+'</span>';}).join('');
   var ytAll='【제목 후보】\n'+(r.youtube_title||'')+'\n\n【설명란】\n'+(r.youtube_desc||'')+'\n\n【태그】\n'+(r.youtube_tags||[]).map(function(t){return t.charAt(0)==='#'?t:'#'+t;}).join(' ');
   document.getElementById('b-youtube').innerHTML=
@@ -560,7 +463,6 @@ function renderAll(r, name) {
     makeCard('제목 후보 3개',r.youtube_title||'')+
     '<div class="card"><div class="card-head"><span class="card-label">설명란</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.youtube_desc||'')+',this)">복사</button></div><div class="card-body">'+esc(r.youtube_desc||'')+'</div><div class="tags-wrap">'+ytTags+'</div></div>';
 
-  /* 티스토리 */
   var tsTags=(r.tistory_tags||[]).map(function(t){return '<span class="tag" style="background:#fff5ee;color:var(--ts-color);">'+esc(t)+'</span>';}).join('');
   var tsAll=(r.tistory_title||'')+'\n\n'+(r.tistory_body||'')+'\n\n태그: '+(r.tistory_tags||[]).join(', ');
   document.getElementById('b-tistory').innerHTML=
@@ -569,7 +471,6 @@ function renderAll(r, name) {
     makeCard('포스팅 제목',r.tistory_title||'')+
     '<div class="card"><div class="card-head"><span class="card-label">본문</span><button class="copy-btn" onclick="copyText('+JSON.stringify(r.tistory_body||'')+',this)">복사</button></div><div class="card-body">'+esc(r.tistory_body||'')+'</div><div class="tags-wrap">'+tsTags+'</div></div>';
 
-  /* 상권분석 */
   var h='<div class="action-bar"><span class="action-info">영업 방문 전 참고</span></div><div class="card">';
   if(r.report&&typeof r.report==='object'){Object.keys(r.report).forEach(function(k){h+='<div class="rep-sec"><div class="rep-title">'+esc(k)+'</div><div class="rep-body">'+esc(r.report[k])+'</div></div>';});}
   else{h+='<div class="card-body">'+esc(r.report||'')+'</div>';}
