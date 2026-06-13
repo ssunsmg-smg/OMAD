@@ -359,6 +359,21 @@ window.onload = function() {
   }
 };
 
+
+function buildFetch(apiKey, prompt, temperature, mimeType) {
+  var isNew = apiKey.startsWith('AQ.');
+  var url = isNew
+    ? 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
+    : 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
+  var headers = {'Content-Type':'application/json'};
+  if (isNew) headers['x-goog-api-key'] = apiKey;
+  return fetch(url, {
+    method:'POST',
+    headers: headers,
+    body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:temperature,responseMimeType:mimeType||'application/json'}})
+  });
+}
+
 function getApiKey() {
   var key = document.getElementById('apiKey').value.trim();
   if (!key) { alert('API 키를 입력하고 저장 버튼을 눌러주세요.\n\naistudio.google.com에서 무료로 발급받을 수 있어요.'); return null; }
@@ -428,8 +443,7 @@ async function autoAnalyze() {
     '\n\n위 정보로 상권 특징과 주요 고객층을 분석하세요.\n반드시 JSON만 반환:\n{"extra":"상권 특징 2~3문장","target":"주요 고객층 2~3문장"}';
 
   try {
-    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey, {
-    });
+    var res = await buildFetch(apiKey, prompt, 0.7);
     var d = await res.json();
     if (!res.ok) throw new Error((d.error&&d.error.message)||'오류 '+res.status);
     var parsed = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
@@ -484,10 +498,7 @@ async function run() {
     '"report":{"주요 고객층 분석":"내용","상권 및 경쟁 환경":"내용","추천 주류 품목":"내용","영업 핵심 포인트":"내용","방문 적기":"내용"}}';
 
   try {
-    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})
-    });
+    var res = await buildFetch(apiKey, prompt, 0.8);
     var d2 = await res.json();
     if (!res.ok) throw new Error((d2.error&&d2.error.message)||'오류 '+res.status);
     var parsed = JSON.parse(d2.candidates[0].content.parts[0].text.replace(/```json|```/g,'').trim());
