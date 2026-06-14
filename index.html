@@ -62,6 +62,8 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { padding: 13px 11px; font-size: 13px; color: var(--text-3); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; font-family: inherit; font-weight: 500; display: flex; align-items: center; gap: 4px; min-height: 44px; transition: color 0.15s; }
 .tab.active { color: var(--text); border-bottom-color: var(--accent-2); }
+.tab .tab-icon { display: none; font-size: 16px; line-height: 1; }
+@media (max-width: 720px) { .tab .tab-icon { display: block; } .tab .dot { display: none !important; } }
 .tab .dot { width: 5px; height: 5px; border-radius: 50%; display: none; }
 .tab.yt .dot { background: var(--yt-color); }
 .tab.ts .dot { background: var(--ts-color); }
@@ -102,7 +104,30 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
 .badge-ts { background: #fff5ee; color: var(--ts-color); }
 .badge-note { background: #f0f4ff; color: #3355cc; font-size: 12px; padding: 10px 14px; border-radius: var(--radius); line-height: 1.6; margin-bottom: 12px; }
 .mobile-fab { display: none; position: fixed; bottom: calc(16px + var(--safe-bottom)); right: 16px; z-index: 130; background: var(--accent-2); color: #fff; border: none; border-radius: 28px; padding: 13px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; box-shadow: 0 4px 20px rgba(233,69,96,0.4); }
-@media (max-width: 720px) { .mobile-fab { display: flex; align-items: center; gap: 7px; } }
+@media (max-width: 720px) { 
+  .mobile-fab { display: flex; align-items: center; gap: 7px; }
+  /* 모바일: 하단 탭바 */
+  .tabs { 
+    position: fixed; bottom: 0; left: 0; right: 0; 
+    z-index: 120; border-top: 1px solid var(--border); border-bottom: none;
+    background: var(--surface); padding: 0;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .tab { 
+    flex: 1; flex-direction: column; padding: 8px 2px; 
+    font-size: 10px; gap: 2px; min-height: 52px;
+    justify-content: center;
+  }
+  .tab .dot { display: none !important; }
+  .main { padding-bottom: 60px; }
+  .panels { padding: 12px 12px 80px; }
+  .mobile-fab { bottom: calc(62px + env(safe-area-inset-bottom, 0px)); right: 12px; padding: 11px 16px; font-size: 13px; }
+  /* 카드 복사버튼 더 크게 */
+  .copy-btn { min-height: 40px; padding: 8px 14px; font-size: 14px; }
+  .copy-all-btn { min-height: 40px; padding: 8px 14px; font-size: 13px; }
+  .card-body { font-size: 14px; line-height: 1.9; }
+}
 </style>
 </head>
 <body>
@@ -142,13 +167,13 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
   </div>
   <div class="main">
     <div class="tabs">
-      <button class="tab active" onclick="showTab('checklist')">플레이스</button>
-      <button class="tab" onclick="showTab('blog')">블로그</button>
-      <button class="tab" onclick="showTab('insta')">인스타</button>
-      <button class="tab" onclick="showTab('facebook')">페이스북</button>
-      <button class="tab yt" onclick="showTab('youtube')"><span class="dot"></span>유튜브</button>
-      <button class="tab ts" onclick="showTab('tistory')"><span class="dot"></span>티스토리</button>
-      <button class="tab" onclick="showTab('report')">상권분석</button>
+      <button class="tab active" onclick="showTab('checklist')"><span class="tab-icon">📍</span>플레이스</button>
+      <button class="tab" onclick="showTab('blog')"><span class="tab-icon">📝</span>블로그</button>
+      <button class="tab" onclick="showTab('insta')"><span class="tab-icon">📸</span>인스타</button>
+      <button class="tab" onclick="showTab('facebook')"><span class="tab-icon">👍</span>페북</button>
+      <button class="tab yt" onclick="showTab('youtube')"><span class="tab-icon">▶</span>유튜브</button>
+      <button class="tab ts" onclick="showTab('tistory')"><span class="tab-icon">T</span>티스토리</button>
+      <button class="tab" onclick="showTab('report')"><span class="tab-icon">📊</span>상권</button>
     </div>
     <div class="panels">
       <div class="loading" id="loading"><div class="spinner"></div><div class="load-txt">AI가 콘텐츠를 생성하고 있습니다…</div></div>
@@ -223,17 +248,9 @@ async function run() {
   document.getElementById('runBtn').disabled=true; document.getElementById('mobileFab').disabled=true;
   document.getElementById('loading').classList.add('on'); document.getElementById('emptyMsg').style.display='none';
   TABS.forEach(function(t){document.getElementById('b-'+t).innerHTML='';});
-  var baseInfo = '상호명:'+data.name+'\n업종:'+data.category+'\n주소:'+data.address+'\n상태:'+data.status+'\n특징:'+data.extra+'\n고객층:'+data.target;
-  // 1차: 짧은 콘텐츠 (플레이스, 인스타, 페이스북, 유튜브, 상권분석)
-  var prompt1 = '다음 외식업체 마케팅 콘텐츠를 생성하세요.\n\n'+baseInfo+'\n\n{"checklist":"네이버플레이스 최적화 체크리스트 10개. 줄바꿈 구분. ✅또는⚠️시작. 형식:이모지 항목명 — 설명","insta_body":"인스타 본문. 이모지. 200자이내. 해시태그제외.","insta_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10"],"facebook":"페이스북. 이모지. 300자이내. 공유유도.","youtube_title":"유튜브 제목후보 3개. 줄바꿈구분.","youtube_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10"],"report":{"주요 고객층 분석":"내용","상권 및 경쟁 환경":"내용","추천 주류 품목":"내용","영업 핵심 포인트":"내용","방문 적기":"내용"}}';
-  // 2차: 긴 콘텐츠 (블로그, 유튜브설명, 티스토리)
-  var prompt2 = '다음 외식업체 마케팅 콘텐츠를 생성하세요.\n\n'+baseInfo+'\n\n{"blog":"네이버 블로그 초안. 제목포함. 1500자. 방문후기형식.","youtube_desc":"유튜브 설명란. 500자. 타임스탬프포함. SEO최적화.","tistory_title":"티스토리 제목. SEO최적화.","tistory_body":"티스토리 포스팅. 2000자. 소제목포함. 방문기형식. 텍스트만.","tistory_tags":["태그1","태그2","태그3","태그4","태그5"]}';
+  var prompt='다음 외식업체 마케팅 콘텐츠를 생성하세요.\n\n상호명:'+data.name+'\n업종:'+data.category+'\n주소:'+data.address+'\n상태:'+data.status+'\n특징:'+data.extra+'\n고객층:'+data.target+'\n\n{"checklist":"네이버플레이스 최적화 체크리스트 10개. 줄바꿈 구분. ✅또는⚠️시작. 형식:이모지 항목명 — 설명","blog":"네이버 블로그 초안. 제목포함. 1500자. 방문후기형식.","insta_body":"인스타 본문. 이모지. 200자이내. 해시태그제외.","insta_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10","태그11","태그12","태그13","태그14","태그15"],"facebook":"페이스북. 이모지. 300자이내. 공유유도.","youtube_title":"유튜브 제목후보 3개. 줄바꿈구분.","youtube_desc":"유튜브 설명란. 500자. 타임스탬프포함. SEO최적화.","youtube_tags":["태그1","태그2","태그3","태그4","태그5","태그6","태그7","태그8","태그9","태그10"],"tistory_title":"티스토리 제목. SEO최적화.","tistory_body":"티스토리 포스팅. 2000자. 소제목포함. 방문기형식. 텍스트만.","tistory_tags":["태그1","태그2","태그3","태그4","태그5"],"report":{"주요 고객층 분석":"내용","상권 및 경쟁 환경":"내용","추천 주류 품목":"내용","영업 핵심 포인트":"내용","방문 적기":"내용"}}';
   try {
-    document.getElementById('loadTxt') && (document.getElementById('loadTxt').textContent = '1단계: 핵심 콘텐츠 생성 중...');
-    var r1 = await callGemini(prompt1, 0.8);
-    document.getElementById('loadTxt') && (document.getElementById('loadTxt').textContent = '2단계: 블로그·티스토리 생성 중...');
-    var r2 = await callGemini(prompt2, 0.8);
-    var parsed = Object.assign({}, r1, r2);
+    var parsed=await callGemini(prompt,0.8);
     document.getElementById('loading').classList.remove('on');
     document.getElementById('runBtn').disabled=false; document.getElementById('mobileFab').disabled=false;
     renderAll(parsed,name); showTab('checklist'); closeSidebar();
