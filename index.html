@@ -29,10 +29,12 @@ body { font-family: "Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-seri
 .layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 52px); }
 @media (max-width: 720px) {
   .layout { grid-template-columns: 1fr; }
-  .sidebar { display: none; border-right: none; border-bottom: 1px solid var(--border); max-height: 80vh; overflow-y: auto; position: fixed; top: 52px; left: 0; right: 0; z-index: 150; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+  .sidebar { display: none; border-right: none; border-bottom: 1px solid var(--border); max-height: 75vh; overflow-y: auto; position: fixed; top: 52px; left: 0; right: 0; z-index: 150; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
   .sidebar.open { display: flex; }
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 140; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 149; }
   .overlay.on { display: block; }
+  /* 생성하기 버튼을 사이드바 하단에 항상 고정 */
+  .sidebar-footer { position: sticky; bottom: 0; background: var(--surface); padding: 12px 0 0; margin-top: auto; }
 }
 .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 18px 16px 24px; display: flex; flex-direction: column; gap: 11px; overflow-y: auto; }
 .sec-title { font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 1px solid var(--border-light); }
@@ -163,7 +165,7 @@ textarea { height: 62px; resize: none; line-height: 1.5; }
       <div class="ai-badge-icon">✦</div>
       <div class="ai-badge-text"><strong>Gemini AI 탑재</strong>API 키 없이 바로 사용 가능합니다</div>
     </div>
-    <button class="run-btn" id="runBtn" onclick="run()">✦ 콘텐츠 생성하기</button>
+    <button class="run-btn" id="runBtn" onclick="closeSidebar();run()">✦ 콘텐츠 생성하기</button>
   </div>
   <div class="main">
     <div class="tabs">
@@ -289,6 +291,7 @@ async function autoAnalyze() {
 function mobileRun(){closeSidebar();run();}
 
 async function run() {
+  closeSidebar(); // 모바일에서 즉시 사이드바 닫기
   var name=document.getElementById('sName').value.trim();
   var addr=document.getElementById('sAddr').value.trim();
   if(!name||!addr){alert('상호명과 주소는 필수입니다');return;}
